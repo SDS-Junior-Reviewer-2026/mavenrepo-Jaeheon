@@ -29,3 +29,17 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.id }}
+        aws-secret-access-key: ${{ secrets.pw }}
+        aws-region: ap-northeast-2
+
+    - name: Send Email
+      run: |
+        aws ses send-email \
+          --from "mincoding@naver.com" \
+          --destination "ToAddresses=seolan25@gmail.com" \
+          --message "Subject={Data='Hello'}, Body={Text={Data='hi'}}"
