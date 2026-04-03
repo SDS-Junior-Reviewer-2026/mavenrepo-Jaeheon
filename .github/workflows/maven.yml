@@ -29,17 +29,11 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-
-    - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: save
+      run: mkdir staging && cp target/*.jar staging
+      
+    - name: artifact
+      uses: actions/upload-artifact@v4
       with:
-        aws-access-key-id: ${{ secrets.ID }}
-        aws-secret-access-key: ${{ secrets.PW }}
-        aws-region: ap-northeast-2
-
-    - name: Send Email
-      run: |
-        aws ses send-email \
-          --from "mincoding@naver.com" \
-          --destination "ToAddresses=seolan25@gmail.com" \
-          --message "Subject={Data='Hello'}, Body={Text={Data='hi'}}"
+        name: Package
+        path: staging
